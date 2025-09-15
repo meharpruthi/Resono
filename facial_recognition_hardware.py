@@ -32,7 +32,7 @@ start_time = time.time()
 fps = 0
 
 # List of names that will trigger the GPIO pin
-authorized_names = ["john", "alice", "bob"]  # Replace with names you wish to authorise THIS IS CASE-SENSITIVE
+authorized_names = ["mehar"]  # Replace with names you wish to authorise THIS IS CASE-SENSITIVE
 
 def process_frame(frame):
     global face_locations, face_encodings, face_names
@@ -105,6 +105,26 @@ def calculate_fps():
         frame_count = 0
         start_time = time.time()
     return fps
+
+def audio(recognizer, pi, servo_pin, authorized_face_detected):
+    while True:
+        print("Debug: Audio thread is alive, listening...")
+        with sr.Microphone() as source:
+            audio = recognizer.listen(source, timeout=2, phrase_time_limit=2)
+            try:
+                command = recognizer.recognize_google(audio).lower()
+                print(f"Debug: Heard: {command}")
+                if "open" in command and authorized_face_detected:
+                    print("Sweet! 'open' with an authorized face, moving servo to 90°")
+                    pi.set_servo_pulsewidth(servo_pin, 1500)  # 90 degrees
+                elif "open" in command and not authorized_face_detected:
+                    print("Heard 'open' but no authorized face, servo back to 0°")
+                    pi.set_servo_pulsewidth(servo_pin, 500)  # 0 degrees
+            except sr.UnknownValueError:
+                continue  # Keep listening if it’s gibberish
+            except sr.RequestError as e:
+                print(f"Uh oh, API error: {e}")
+                continue
 
 while True:
     # Capture a frame from camera
