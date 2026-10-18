@@ -1,5 +1,8 @@
 # 🔐 Resono – Dual Biometric Audiovisual Lock  
 
+<img width="1200" height="1600" alt="image" src="https://github.com/user-attachments/assets/73acb3fe-7ab6-47b2-843b-e99c75d7caf4" />
+
+
 > *"Resono resonates only with you — your face and your voice are the keys."*  
 
 ---
